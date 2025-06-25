@@ -16,7 +16,7 @@ window.onload = function () {
 
   function errorCallback(error) {
     console.error("Error getting location:", error);
-    alert("Unable to fetch location. Please enable location access.");
+    // alert("Unable to fetch location. Please enable location access.");
   }
 
   function getCityName(location) {
@@ -28,6 +28,8 @@ window.onload = function () {
       .then((data) => {
         const city = data[0]?.name;
         console.log("City Name:", city);
+        document.querySelector(".error").style.display = "none";
+        document.querySelector(".location").style.display = "none";
         document.querySelector(".weather").style.display = "block";
         // You can now call your weather API using this city name
         checkWeather(city);
@@ -43,6 +45,11 @@ const searchBtn = document.querySelector(".search button");
 const weatherIcon = document.querySelector(".weather-icon");
 async function checkWeather(city) {
   const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+  if (response.status == 404) {
+    document.querySelector(".error").style.display = "block";
+    document.querySelector(".location").style.display = "none";
+    document.querySelector(".weather").style.display = "none";
+  }
   var data = await response.json();
   console.log(data);
   document.querySelector(".city").innerHTML = data.name;
@@ -62,6 +69,8 @@ async function checkWeather(city) {
   } else if (data.weather[0].main == "Snow") {
     weatherIcon.src = "images/snow.png";
   }
+  document.querySelector(".location").style.display = "none";
+  document.querySelector(".error").style.display = "none";
   document.querySelector(".weather").style.display = "block";
 }
 
